@@ -1,7 +1,9 @@
 /* ===== App Layout ===== */
 .app {
   display: flex;
-  min-height: 100vh;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
 }
 
@@ -13,7 +15,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: 
+  background:
     radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
   pointer-events: none;
@@ -73,6 +75,8 @@
   display: flex;
   flex: 1;
   margin-top: 70px;
+  height: calc(100vh - 70px);
+  overflow: hidden;
   position: relative;
   z-index: 1;
 }
@@ -81,7 +85,8 @@
 .map-panel {
   flex: 1;
   position: relative;
-  min-height: calc(100vh - 70px);
+  height: 100%;
+  overflow: hidden;
 }
 
 .map-container {
@@ -125,15 +130,18 @@
 /* ===== Results Panel ===== */
 .results-panel {
   width: 420px;
-  min-height: calc(100vh - 70px);
+  height: 100%;
+  max-height: 100%;
   background: rgba(15, 23, 42, 0.95);
   backdrop-filter: blur(20px);
   border-left: 1px solid var(--glass-border);
   padding: 24px;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  flex-shrink: 0;
 }
 
 .panel-header {
@@ -186,9 +194,17 @@
   letter-spacing: 1px;
 }
 
-.ndvi-healthy .value { color: var(--primary-light); }
-.ndvi-moderate .value { color: var(--accent); }
-.ndvi-poor .value { color: var(--danger); }
+.ndvi-healthy .value {
+  color: var(--primary-light);
+}
+
+.ndvi-moderate .value {
+  color: var(--accent);
+}
+
+.ndvi-poor .value {
+  color: var(--danger);
+}
 
 /* ===== NDVI Gauge ===== */
 .ndvi-gauge {
@@ -280,10 +296,21 @@
   transition: width 0.5s ease;
 }
 
-.landcover-fill.cropland { background: var(--primary); }
-.landcover-fill.forest { background: #22c55e; }
-.landcover-fill.water { background: var(--secondary); }
-.landcover-fill.urban { background: #64748b; }
+.landcover-fill.cropland {
+  background: var(--primary);
+}
+
+.landcover-fill.forest {
+  background: #22c55e;
+}
+
+.landcover-fill.water {
+  background: var(--secondary);
+}
+
+.landcover-fill.urban {
+  background: #64748b;
+}
 
 .landcover-percent {
   width: 45px;
@@ -380,15 +407,24 @@
 @media (max-width: 1024px) {
   .main-container {
     flex-direction: column;
+    height: auto;
+    overflow-y: auto;
   }
-  
+
+  .map-panel {
+    height: 50vh;
+    min-height: 300px;
+    flex-shrink: 0;
+  }
+
   .results-panel {
     width: 100%;
-    min-height: auto;
+    height: auto;
+    max-height: none;
     border-left: none;
     border-top: 1px solid var(--glass-border);
   }
-  
+
   .analysis-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -398,15 +434,15 @@
   .app-header {
     padding: 0 16px;
   }
-  
+
   .logo-text {
     display: none;
   }
-  
+
   .results-panel {
     padding: 16px;
   }
-  
+
   .analysis-grid {
     grid-template-columns: 1fr;
   }
@@ -435,6 +471,7 @@
     opacity: 0;
     transform: translate(-50%, -45%);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, -50%);
@@ -578,9 +615,12 @@
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
   }
+
   50% {
     box-shadow: 0 4px 30px rgba(16, 185, 129, 0.5);
   }
@@ -592,9 +632,12 @@
 }
 
 @keyframes bounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }
@@ -633,14 +676,14 @@
     max-height: 80vh;
     overflow-y: auto;
   }
-  
+
   .drawing-instructions {
     width: 90%;
     flex-direction: column;
     text-align: center;
     gap: 12px;
   }
-  
+
   .radius-buttons {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -652,6 +695,8 @@
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  flex-shrink: 0;
+  /* Prevent collapse in flex container */
 }
 
 .crop-header {
@@ -866,11 +911,11 @@
     grid-template-columns: 32px 1fr;
     gap: 8px;
   }
-  
+
   .crop-details {
     grid-column: 1 / 3;
   }
-  
+
   .crop-reasons {
     grid-column: 1 / 3;
   }
@@ -1201,16 +1246,16 @@
     gap: 4px;
     align-items: center;
   }
-  
+
   .forecast-strip {
     overflow-x: auto;
   }
-  
+
   .forecast-day {
     min-width: 55px;
     padding: 8px 6px;
   }
-  
+
   .pollen-type-item {
     grid-template-columns: 20px 50px 1fr 50px;
   }

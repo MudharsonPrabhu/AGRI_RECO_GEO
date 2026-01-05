@@ -133,6 +133,16 @@ function App() {
     setShowDrawOptions(false);
   }, []);
 
+  // Cancel drawing and restore default UI
+  const handleCancelDrawing = useCallback(() => {
+    if (polygon) {
+      polygon.setMap(null);
+      setPolygon(null);
+    }
+    setDrawMode(null);
+    setShowDrawOptions(false);
+  }, [polygon]);
+
   const handleClearBoundary = useCallback(() => {
     if (polygon) {
       polygon.setMap(null);
@@ -291,18 +301,18 @@ function App() {
             )}
           </GoogleMap>
 
-          {/* Draw Options Panel */}
-          {showDrawOptions && !hasBoundary && (
+          {/* Draw Options Panel - hidden when drawing mode is active */}
+          {showDrawOptions && !hasBoundary && !drawMode && (
             <div className="draw-options-panel">
               <div className="draw-options-header">
                 <h3>📍 Select Farm Area</h3>
                 <button className="close-btn" onClick={() => setShowDrawOptions(false)}>×</button>
               </div>
-              
+
               <div className="draw-option-section">
                 <h4>🎯 Quick Select (Recommended)</h4>
                 <p className="option-description">Choose a radius and click on the map to select your farm area</p>
-                
+
                 <div className="radius-buttons">
                   {RADIUS_OPTIONS.filter(r => r.value !== 'custom').map((option) => (
                     <button
@@ -316,14 +326,14 @@ function App() {
                 </div>
 
                 <div className="quick-actions">
-                  <button 
+                  <button
                     className="btn btn-primary"
                     onClick={() => setDrawMode('circle')}
                   >
                     👆 Click on Map to Place
                   </button>
                   {userLocation && (
-                    <button 
+                    <button
                       className="btn btn-secondary"
                       onClick={handleUseMyLocation}
                     >
@@ -340,7 +350,7 @@ function App() {
               <div className="draw-option-section">
                 <h4>✏️ Draw Custom Shape</h4>
                 <p className="option-description">Click points on the map to draw a custom boundary</p>
-                <button 
+                <button
                   className="btn btn-secondary full-width"
                   onClick={() => setDrawMode('polygon')}
                 >
@@ -350,19 +360,20 @@ function App() {
             </div>
           )}
 
-          {/* Drawing Instructions */}
+          {/* Drawing Instructions - Circle Mode */}
           {drawMode === 'circle' && (
             <div className="drawing-instructions">
               <div className="instruction-icon">👆</div>
               <div className="instruction-text">
                 <strong>Click anywhere on the map</strong> to place your farm area
                 <br />
-                <span className="instruction-sub">Radius: {circleRadius >= 1000 ? `${circleRadius/1000}km` : `${circleRadius}m`}</span>
+                <span className="instruction-sub">Radius: {circleRadius >= 1000 ? `${circleRadius / 1000}km` : `${circleRadius}m`}</span>
               </div>
-              <button className="btn btn-secondary btn-sm" onClick={() => setDrawMode(null)}>Cancel</button>
+              <button className="btn btn-danger btn-sm" onClick={handleCancelDrawing}>✕ Cancel</button>
             </div>
           )}
 
+          {/* Drawing Instructions - Polygon Mode */}
           {drawMode === 'polygon' && (
             <div className="drawing-instructions">
               <div className="instruction-icon">✏️</div>
@@ -371,7 +382,7 @@ function App() {
                 <br />
                 <span className="instruction-sub">Click the first point again to close the shape</span>
               </div>
-              <button className="btn btn-secondary btn-sm" onClick={() => setDrawMode(null)}>Cancel</button>
+              <button className="btn btn-danger btn-sm" onClick={handleCancelDrawing}>✕ Cancel</button>
             </div>
           )}
 

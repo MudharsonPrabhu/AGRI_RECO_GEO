@@ -62,6 +62,7 @@ from earth_engine.rainfall import get_rainfall_timeseries, get_drought_index
 from earth_engine.landcover import get_landcover_stats, get_landcover_area
 from earth_engine.yield_model import estimate_yield
 from earth_engine.crop_recommend import get_crop_recommendations
+from earth_engine.gemini_orchestrator import get_gemini_recommendations
 from earth_engine.google_apis import get_pollen_data, get_solar_data, get_weather_data
 
 
@@ -136,33 +137,34 @@ def analyze():
         print("Calculating drought index...")
         drought_result = get_drought_index(geometry)
         
-        # 6. Crop Recommendations
-        print("Generating crop recommendations...")
-        crop_recommendations = get_crop_recommendations(
-            geometry, 
-            ndvi_value, 
-            rainfall_total,
-            landcover_result
-        )
-        
-        # Get center coordinates for API calls
+        # Get center coordinates for API calls (needed for weather and crop recommendations)
         try:
             centroid = geometry.centroid().coordinates().getInfo()
             lng, lat = centroid
         except:
             lat, lng = 20.0, 78.0  # Default to central India
         
+        # 6. Weather Data (fetch before crop recommendations)
+        print("🌤️ Fetching weather data...")
+        weather_data = get_weather_data(lat, lng)
+        
         # 7. Pollen Data
-        print("Fetching pollen data...")
+        print("🌸 Fetching pollen data...")
         pollen_data = get_pollen_data(lat, lng)
         
         # 8. Solar Data
-        print("Fetching solar data...")
+        print("☀️ Fetching solar data...")
         solar_data = get_solar_data(lat, lng)
         
-        # 9. Weather Data
-        print("Fetching weather data...")
-        weather_data = get_weather_data(lat, lng)
+        # 9. Crop Recommendations (Gemini AI with fallback to rule-based)
+        print("🤖 Generating AI-powered crop recommendations...")
+        crop_recommendations = get_gemini_recommendations(
+            geometry=geometry,
+            ndvi_value=ndvi_value,
+            rainfall_data=rainfall_result,
+            weather_data=weather_data,
+            landcover_data=landcover_result
+        )
         
         # Compile response
         response = {
