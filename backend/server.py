@@ -302,13 +302,14 @@ def drought_endpoint():
 
 
 if __name__ == "__main__":
-    print("\n🌾 Smart Farmer Geo Dashboard API")
+    port = int(os.getenv("PORT", 5000))
+    print(f"\n🌾 Smart Farmer Geo Dashboard API")
     print("=" * 40)
-    print("Starting server on http://localhost:5000")
+    print(f"Starting server on http://0.0.0.0:{port}")
     print("=" * 40 + "\n")
     
     app.run(
         host="0.0.0.0",
-        port=5000,
-        debug=True
+        port=port,
+        debug=os.getenv("FLASK_ENV") != "production"
     )
