@@ -1,0 +1,64 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+.env*.local
+
+# API Keys and Service Accounts
+*service-account*.json
+*serviceaccount*.json
+*-credentials.json
+*-key.json
+*.pem
+*.key
+secrets/
+credentials/
+
+# Firebase
+firebase-adminsdk*.json
+firebase-config.json
+firebase-credentials.json
+.firebaserc
+firebase-debug.log
+firestore-debug.log
+
+# Google Cloud
+gcloud-key.json
+google-cloud-key.json
+application_default_credentials.json
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+.venv/
